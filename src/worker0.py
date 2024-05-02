@@ -56,7 +56,7 @@ async def start_bulk():
                 }
             ),
             queue='event.0'
-        ) for i in range(100)]
+        ) for i in range(config.batch_size)]
         await asyncio.gather(*publish)
     return "OK"
 
