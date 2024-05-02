@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "faststreampoc"
+version = "0.1.0"
+description = ""
+authors = ["Prakhar Malviya <prakhar.malviya@47billion.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+faststream = {extras = ["rabbit"], version = "^0.5.0"}
+pyyaml = "^6.0.1"
+fastapi = {extras = ["all"], version = "^0.110.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

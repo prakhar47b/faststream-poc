@@ -1,0 +1,98 @@
+asyncapi: 2.6.0
+defaultContentType: application/json
+info:
+  title: FastStream
+  version: 0.1.0
+  description: ''
+servers:
+  development:
+    url: amqp://guest:guest@localhost:5672/
+    protocol: amqp
+    protocolVersion: 0.9.1
+channels:
+  in:_:HandleMsg:
+    servers:
+    - development
+    bindings:
+      amqp:
+        is: routingKey
+        bindingVersion: 0.2.0
+        queue:
+          name: in
+          durable: false
+          exclusive: false
+          autoDelete: false
+          vhost: /
+        exchange:
+          type: default
+          vhost: /
+    subscribe:
+      bindings:
+        amqp:
+          cc: in
+          ack: true
+          bindingVersion: 0.2.0
+      message:
+        $ref: '#/components/messages/in:_:HandleMsg:Message'
+  out:_:Publisher:
+    servers:
+    - development
+    bindings:
+      amqp:
+        is: routingKey
+        bindingVersion: 0.2.0
+        queue:
+          name: out
+          durable: false
+          exclusive: false
+          autoDelete: false
+          vhost: /
+        exchange:
+          type: default
+          vhost: /
+    publish:
+      bindings:
+        amqp:
+          cc: out
+          ack: true
+          deliveryMode: 1
+          mandatory: true
+          bindingVersion: 0.2.0
+      message:
+        $ref: '#/components/messages/out:_:Publisher:Message'
+components:
+  messages:
+    in:_:HandleMsg:Message:
+      title: in:_:HandleMsg:Message
+      correlationId:
+        location: $message.header#/correlation_id
+      payload:
+        $ref: '#/components/schemas/User'
+    out:_:Publisher:Message:
+      title: out:_:Publisher:Message
+      correlationId:
+        location: $message.header#/correlation_id
+      payload:
+        $ref: '#/components/schemas/out:_:Publisher:Message:Payload'
+  schemas:
+    User:
+      properties:
+        user:
+          examples:
+          - John
+          title: User
+          type: string
+        user_id:
+          examples:
+          - '1'
+          exclusiveMinimum: 0
+          title: User Id
+          type: integer
+      required:
+      - user
+      - user_id
+      title: User
+      type: object
+    out:_:Publisher:Message:Payload:
+      title: out:_:Publisher:Message:Payload
+      type: string
