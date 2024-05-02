@@ -8,12 +8,12 @@ from faststream.rabbit.annotations import RabbitMessage
 import config
 from models import GenericEvent, Status
 
-broker = RabbitBroker(config.rabbit_url)
-
-app = FastStream(broker)
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('Worker 1')
+
+broker = RabbitBroker(config.rabbit_url, max_consumers=1, logger=logger)
+
+app = FastStream(broker)
 
 
 @broker.subscriber("event.1")

@@ -7,7 +7,7 @@ from faststream.rabbit import RabbitBroker, RabbitQueue
 import config
 from models import GenericEvent, Status
 
-broker = RabbitBroker(config.rabbit_url)
+broker = RabbitBroker(config.rabbit_url, max_consumers=1)
 
 app = FastStream(broker)
 

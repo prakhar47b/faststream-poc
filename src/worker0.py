@@ -1,18 +1,22 @@
 import asyncio
+import logging
 
 from fastapi import FastAPI
 from faststream.rabbit import RabbitBroker
-from faststream.rabbit.fastapi import RabbitRouter, Logger
+from faststream.rabbit.fastapi import RabbitRouter
 
 import config
 from models import GenericEvent, Status
 
-router = RabbitRouter(config.rabbit_url)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger('Worker 0')
+
+router = RabbitRouter(config.rabbit_url, max_consumers=1, logger=logger)
 
 
 @router.subscriber("event.0")
 @router.publisher("event.1")
-async def process_event0(event: GenericEvent, logger: Logger):
+async def process_event0(event: GenericEvent):
     logger.info(f'Received event:\n{event}')
     await asyncio.sleep(5)
     return GenericEvent(
@@ -23,19 +27,6 @@ async def process_event0(event: GenericEvent, logger: Logger):
         }
     )
 
-
-# @router.subscriber("event.1")
-# @router.publisher("event.2")
-# async def process_event1(event: GenericEvent, logger: Logger):
-#     logger.info(f'Received event:\n{event}')
-#     return GenericEvent(
-#         event_name="event.2",
-#         status=Status.succeeded,
-#         data={
-#             'index': event.data['index']
-#         }
-#     )
-#
 
 @router.get("/start")
 async def start_single():
