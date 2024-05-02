@@ -20,7 +20,7 @@ app = FastStream(broker)
 @broker.publisher("event.2")
 async def process_event1(event: GenericEvent, msg: RabbitMessage):
     logger.info(f'Received event:\n{event}')
-    await asyncio.sleep(10)
+    await asyncio.sleep(config.worker_1_process_time)
     # await msg.nack()
     return GenericEvent(
         event_name="event.2",

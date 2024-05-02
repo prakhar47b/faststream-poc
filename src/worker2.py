@@ -19,7 +19,7 @@ logger = logging.getLogger('Worker 2.0')
 @broker.publisher("output")
 async def process_event1(event: GenericEvent):
     logger.info(f'Received event:\n{event}')
-    await asyncio.sleep(5)
+    await asyncio.sleep(config.worker_2_process_time)
     return GenericEvent(
         event_name="output2_0",
         status=Status.succeeded,

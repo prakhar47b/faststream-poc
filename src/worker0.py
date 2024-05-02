@@ -18,7 +18,7 @@ router = RabbitRouter(config.rabbit_url, max_consumers=1, logger=logger)
 @router.publisher("event.1")
 async def process_event0(event: GenericEvent):
     logger.info(f'Received event:\n{event}')
-    await asyncio.sleep(5)
+    await asyncio.sleep(config.worker_0_process_time)
     return GenericEvent(
         event_name="event.1",
         status=Status.succeeded,
